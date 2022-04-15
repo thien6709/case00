@@ -11,22 +11,22 @@ resource "azurerm_network_interface" "myterraformnic" {
     }
 
     tags = {
-        environment = "Terraform Demo"
+        environment = ""
     }
 }
-
-# # Generate random text for a unique storage account name and DNS label
-# resource "random_id" "randomId" {
-#     keepers = {
-#         # Generate a new ID only when a new resource group is defined
-#         resource_group = var.rgname
-#     }
-#     byte_length = 8
-# }
-# resource "random_id" "randomIdVM" {
+# Generate random text for a unique storage account name and DNS label
+resource "random_id" "randomId" {
+    keepers = {
+        # Generate a new ID only when a new resource group is defined
+        resource_group = var.rgname
+    }
+    byte_length = 8
+}
+resource "random_id" "randomIdVM" {
     
-#         byte_length = 8
-# }
+        byte_length = 8
+}
+
 
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "mystorageaccount" {
@@ -35,10 +35,6 @@ resource "azurerm_storage_account" "mystorageaccount" {
     location                    = var.location
     account_tier                = "Standard"
     account_replication_type    = "LRS"
-
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
 
 # Create virtual machine
@@ -58,29 +54,29 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         managed_disk_type = "Premium_LRS"
     }
 
-    storage_image_reference {
-        publisher = "RedHat"
-        offer     = "RHEL"
-        sku       = "7.7"
-        version   = "latest"
-    }
+    source_image_reference   { 
+     publisher   =   "MicrosoftWindowsServer" 
+     offer       =   "WindowsServer" 
+     sku         =   "2019-Datacenter" 
+     version     =   "latest" 
+   } 
 
     os_profile {
         computer_name  = var.vmname
         admin_username = var.adminusername
         admin_password = var.vmpassword
     }
-
-    os_profile_linux_config {
-        disable_password_authentication = false
-    }
+#for linux
+    # os_profile_linux_config {
+    #     disable_password_authentication = false
+    # }
 
     boot_diagnostics {
         enabled = "true"
         storage_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
     }
-
-    tags = {
-        environment = "Azure Firewall Demo"
+        tags = {
+        environment = ""
     }
+
 }

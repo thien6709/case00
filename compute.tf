@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "computeRG" {
 }
 module "hubmanagementvm" {
   source        = "./modules/linuxvmhub"
-  rgname        = azurerm_resource_group.computeRG.name
+  rgname        = computeRG.name
   location      = var.location
   subnetid      = module.hubnetwork.vnet_subnets[1]
   vmname        = var.hub_vm_hostname
@@ -35,34 +35,32 @@ module "linuxvmspoke2" {
   vmsize        = var.vm_size
    } 
 
-  resource "azurerm_virtual_machine_extension" "spokevm1extension" {
-  name                 = "hostname"
-  virtual_machine_id   = module.linuxvmspoke1.id
-  publisher            = "Microsoft.Azure.Extensions"
-  type                 = "CustomScript"
-  type_handler_version = "2.0"
- settings = <<SETTINGS
-    {                         
-        "fileUris": ["https://raw.githubusercontent.com/sdcscripts/terraform-az-firewallnva/master/supporting/webserver.sh"],
-        "commandToExecute": "bash webserver.sh"
+#   resource "azurerm_virtual_machine_extension" "spokevm1extension" {
+#   name                 = "hostname"
+#   virtual_machine_id   = module.linuxvmspoke1.id
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.0"
+#  settings = <<SETTINGS
+#     {                         
+        
  
-    }
-SETTINGS
+#     }
+# SETTINGS
 
-  }
+#   }
 
-  resource "azurerm_virtual_machine_extension" "spokevm2extension" {
-  name                 = "hostname"
-  virtual_machine_id   = module.linuxvmspoke2.id
-  publisher            = "Microsoft.Azure.Extensions"
-  type                 = "CustomScript"
-  type_handler_version = "2.0"
- settings = <<SETTINGS
-    {                         
-        "fileUris": ["https://raw.githubusercontent.com/sdcscripts/terraform-az-firewallnva/master/supporting/webserver.sh"],
-        "commandToExecute": "bash webserver.sh"
+#   resource "azurerm_virtual_machine_extension" "spokevm2extension" {
+#   name                 = "hostname"
+#   virtual_machine_id   = module.linuxvmspoke2.id
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.0"
+#  settings = <<SETTINGS
+#     {                         
+       
  
-    }
-SETTINGS
+#     }
+# SETTINGS
 
-  }
+#   }

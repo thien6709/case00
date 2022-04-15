@@ -8,9 +8,9 @@ variable "location" {
 variable "vmname" {
   description = "Name of the VM"
 }
-variable "subnetid" {
-  description = "ID of the subnet to use for the VM deployment"
-}
+# variable "subnetid" {
+#   description = "ID of the subnet to use for the VM deployment"
+# }
 
 variable "vmsize" {
   description = "size of VM"

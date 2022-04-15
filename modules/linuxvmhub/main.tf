@@ -5,9 +5,6 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     allocation_method            = "Dynamic"
     domain_name_label            = "${var.vmname}-${random_id.randomIdVM.hex}"
 
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
 
 # Create network interface
@@ -23,23 +20,7 @@ resource "azurerm_network_interface" "myterraformnic" {
         public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
     }
 
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
-
-# # Generate random text for a unique storage account name and DNS label
-# resource "random_id" "randomId" {
-#     keepers = {
-#         # Generate a new ID only when a new resource group is defined
-#         resource_group = var.rgname
-#     }
-#     byte_length = 8
-# }
-# resource "random_id" "randomIdVM" {
-    
-#         byte_length = 8
-# }
 
 # Create storage account for boot diagnostics
  resource "azurerm_storage_account" "mystorageaccount" {
@@ -49,9 +30,6 @@ resource "azurerm_network_interface" "myterraformnic" {
     account_tier                = "Standard"
     account_replication_type    = "LRS"
 
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
 
 # Create virtual machine
@@ -72,9 +50,9 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     storage_image_reference {
-        publisher = "RedHat"
-        offer     = "RHEL"
-        sku       = "7.7"
+        publisher = "..."
+        offer     = "..."
+        sku       = "..."
         version   = "latest"
     }
 
@@ -93,7 +71,5 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         storage_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
     }
 
-    tags = {
-        environment = "Netapp Demo"
-    }
+
 }
