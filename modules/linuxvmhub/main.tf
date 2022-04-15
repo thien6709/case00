@@ -4,7 +4,10 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     resource_group_name          = var.rgname
     allocation_method            = "Dynamic"
     domain_name_label            = "${var.vmname}-${random_id.randomIdVM.hex}"
-
+    
+ tags = {
+        environment = ""
+    }
 }
 
 # Create network interface
@@ -19,9 +22,22 @@ resource "azurerm_network_interface" "myterraformnic" {
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
     }
-
+    tags = {
+        environment = ""
+    }
 }
-
+# Generate random text for a unique storage account name and DNS label
+resource "random_id" "randomId" {
+    keepers = {
+        # Generate a new ID only when a new resource group is defined
+        resource_group = var.rgname
+    }
+    byte_length = 8
+}
+resource "random_id" "randomIdVM" {
+    
+        byte_length = 8
+}
 # Create storage account for boot diagnostics
  resource "azurerm_storage_account" "mystorageaccount" {
     name                        = "diag${random_id.randomId.hex}"
@@ -49,27 +65,29 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         managed_disk_type = "Premium_LRS"
     }
 
-    storage_image_reference {
-        publisher = "..."
-        offer     = "..."
-        sku       = "..."
-        version   = "latest"
-    }
+    source_image_reference   { 
+     publisher   =   "MicrosoftWindowsServer" 
+     offer       =   "WindowsServer" 
+     sku         =   "2019-Datacenter" 
+     version     =   "latest" 
+   } 
 
     os_profile {
         computer_name  = var.vmname
         admin_username = var.adminusername
         admin_password = var.vmpassword
     }
-
-    os_profile_linux_config {
-        disable_password_authentication = false
-    }
+# for linux
+    # os_profile_linux_config {
+    #     disable_password_authentication = false
+    # }
 
     boot_diagnostics {
         enabled = "true"
         storage_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
     }
 
-
+    tags = {
+        environment = ""
+    }
 }
